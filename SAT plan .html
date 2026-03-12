@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Plan SAT – 12 Semanas</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --ink:   #1A1410;
+    --math-h:#1B4F8A;
+    --math-l:#E8F0FB;
+    --math-m:#3A7BD5;
+    --read-h:#1A5C35;
+    --read-l:#E6F4EC;
+    --read-m:#2D9652;
+    --exam-h:#7C2D12;
+    --exam-l:#FEF0E7;
+    --exam-m:#EA580C;
+    --rest-h:#4B4B4B;
+    --rest-l:#F0EFEd;
+    --rest-m:#9CA3AF;
+    --gold:  #C9A84C;
+    --rose:  #E07070;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── DECORATIVE BG ── */
+  body::before {
+    content:'';
+    position:fixed; inset:0; z-index:0;
+    background:
+      radial-gradient(ellipse 60% 40% at 10% 10%, #dde8f8 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 90% 80%, #d8f0e2 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 80% 10%, #fde8d8 0%, transparent 55%);
+    pointer-events:none;
+  }
+
+  .page { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:48px 24px 80px; }
+
+  /* ── HEADER ── */
+  header { text-align:center; margin-bottom:56px; }
+
+  .badge {
+    display:inline-block;
+    font-family:'DM Mono', monospace;
+    font-size:11px; letter-spacing:.15em; text-transform:uppercase;
+    color: var(--gold);
+    border:1.5px solid var(--gold);
+    border-radius:100px;
+    padding:5px 16px;
+    margin-bottom:20px;
+  }
+
+  h1 {
+    font-family:'Playfair Display', serif;
+    font-size: clamp(38px, 6vw, 64px);
+    font-weight:900;
+    line-height:1.05;
+    letter-spacing:-.02em;
+    color: var(--ink);
+    margin-bottom:16px;
+  }
+
+  h1 span { color: var(--math-h); }
+
+  .subtitle {
+    font-size:15px; color:#666; font-weight:300; letter-spacing:.02em;
+    max-width:520px; margin:0 auto 32px;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+    margin-bottom:48px;
+  }
+  .legend-item {
+    display:flex; align-items:center; gap:8px;
+    background:#fff; border-radius:100px;
+    padding:8px 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    font-size:13px; font-weight:500;
+  }
+  .legend-dot { width:10px; height:10px; border-radius:50%; }
+
+  /* ── WEEK SELECTOR ── */
+  .week-nav {
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:32px; gap:16px; flex-wrap:wrap;
+  }
+
+  .week-label {
+    font-family:'Playfair Display', serif;
+    font-size:28px; font-weight:700;
+    display:flex; align-items:baseline; gap:10px;
+  }
+  .week-label small {
+    font-family:'DM Sans', sans-serif;
+    font-size:13px; font-weight:400; color:#888;
+  }
+
+  .week-pills { display:flex; gap:8px; flex-wrap:wrap; }
+  .pill {
+    width:36px; height:36px;
+    border-radius:50%;
+    border: 2px solid transparent;
+    background:#fff;
+    font-size:13px; font-weight:600;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition: all .18s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    color: var(--ink);
+  }
+  .pill:hover { border-color: var(--math-m); color: var(--math-m); }
+  .pill.active { background: var(--math-h); color:#fff; border-color: var(--math-h); }
+  .pill.exam-pill { border-color: var(--exam-m); }
+  .pill.exam-pill.active { background: var(--exam-m); border-color: var(--exam-m); }
+
+  /* ── GRID ── */
+  .week-grid {
+    display:grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap:12px;
+    margin-bottom:40px;
+  }
+
+  .day-card {
+    border-radius:20px;
+    padding:20px 16px 18px;
+    display:flex; flex-direction:column; gap:10px;
+    position:relative; overflow:hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,.06);
+    transition: transform .2s ease, box-shadow .2s ease;
+    cursor:default;
+    min-height:280px;
+  }
+  .day-card:hover { transform:translateY(-3px); box-shadow:0 10px 32px rgba(0,0,0,.10); }
+
+  .day-card::before {
+    content:''; position:absolute; bottom:-20px; right:-20px;
+    width:80px; height:80px; border-radius:50%;
+    opacity:.12;
+  }
+
+  /* Math */
+  .card-math     { background: var(--math-l); }
+  .card-math::before { background: var(--math-m); }
+
+  /* Reading */
+  .card-read     { background: var(--read-l); }
+  .card-read::before { background: var(--read-m); }
+
+  /* Review */
+  .card-review   { background: #FFF8E7; }
+  .card-review::before { background: var(--gold); }
+
+  /* Exam */
+  .card-exam     { background: var(--exam-l); border:2px solid var(--exam-m); }
+  .card-exam::before { background: var(--exam-m); }
+
+  /* Rest */
+  .card-rest     { background: #F5F4F2; }
+  .card-rest::before { background: #ccc; }
+
+  .day-name {
+    font-family:'DM Mono', monospace;
+    font-size:10px; letter-spacing:.12em; text-transform:uppercase;
+    font-weight:500; opacity:.5; margin-bottom:2px;
+  }
+  .day-num {
+    font-family:'Playfair Display', serif;
+    font-size:26px; font-weight:700; line-height:1;
+    margin-bottom:4px;
+  }
+
+  .subject-block {
+    border-radius:10px; padding:10px 12px;
+    display:flex; flex-direction:column; gap:4px;
+    position:relative; z-index:1;
+  }
+
+  .sb-math { background: rgba(58,123,213,.12); }
+  .sb-read { background: rgba(45,150,82,.12); }
+  .sb-exam { background: rgba(234,88,12,.12); }
+  .sb-rest { background: rgba(150,150,150,.1); }
+  .sb-gold { background: rgba(201,168,76,.15); }
+
+  .sb-label {
+    font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    opacity:.6;
+  }
+  .sb-label.math-c { color: var(--math-h); }
+  .sb-label.read-c { color: var(--read-h); }
+  .sb-label.exam-c { color: var(--exam-h); }
+  .sb-label.gold-c { color: #92700A; }
+
+  .sb-task { font-size:12.5px; font-weight:500; line-height:1.4; }
+
+  .sb-time {
+    font-family:'DM Mono', monospace;
+    font-size:10px; opacity:.45; margin-top:2px;
+  }
+
+  .exam-badge {
+    display:inline-flex; align-items:center; gap:6px;
+    background: var(--exam-m); color:#fff;
+    border-radius:8px; padding:6px 10px;
+    font-size:12px; font-weight:700; letter-spacing:.04em;
+  }
+
+  .rest-icon { font-size:32px; margin:auto; opacity:.5; }
+
+  /* ── UNIT STRIP ── */
+  .unit-strip {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:12px; margin-bottom:40px;
+  }
+
+  .unit-card {
+    border-radius:16px; padding:20px 24px;
+    display:flex; gap:16px; align-items:center;
+    box-shadow:0 2px 12px rgba(0,0,0,.06);
+  }
+  .uc-math { background: var(--math-l); border-left: 4px solid var(--math-m); }
+  .uc-read { background: var(--read-l); border-left: 4px solid var(--read-m); }
+
+  .uc-num {
+    font-family:'Playfair Display', serif;
+    font-size:40px; font-weight:900; line-height:1; opacity:.25;
+  }
+  .uc-body { flex:1; }
+  .uc-subject { font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; opacity:.5; margin-bottom:3px; }
+  .uc-title   { font-size:16px; font-weight:600; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section { margin-bottom:48px; }
+  .progress-label { font-size:12px; font-weight:500; letter-spacing:.05em; text-transform:uppercase; color:#888; margin-bottom:8px; }
+  .progress-bar { height:8px; background:#E5E0D8; border-radius:100px; overflow:hidden; }
+  .progress-fill { height:100%; border-radius:100px; transition: width .5s ease; }
+  .pf-math { background: linear-gradient(90deg, var(--math-m), var(--math-h)); }
+  .pf-read { background: linear-gradient(90deg, var(--read-m), var(--read-h)); }
+
+  /* ── FOOTER TIP ── */
+  .tip-box {
+    border-radius:16px; padding:20px 24px;
+    background:#fff; border:1px solid #EAE4DC;
+    display:flex; gap:16px; align-items:flex-start;
+    box-shadow:0 2px 10px rgba(0,0,0,.04);
+    margin-bottom:24px;
+  }
+  .tip-icon { font-size:22px; margin-top:2px; }
+  .tip-title { font-size:13px; font-weight:700; margin-bottom:4px; }
+  .tip-body  { font-size:13px; color:#555; line-height:1.55; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 800px) {
+    .week-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 540px) {
+    .week-grid { grid-template-columns: repeat(2, 1fr); }
+    .unit-strip { grid-template-columns: 1fr; }
+  }
+
+  /* ── ANIMATIONS ── */
+  .day-card { animation: fadeUp .35s ease both; }
+  .day-card:nth-child(1){animation-delay:.04s}
+  .day-card:nth-child(2){animation-delay:.08s}
+  .day-card:nth-child(3){animation-delay:.12s}
+  .day-card:nth-child(4){animation-delay:.16s}
+  .day-card:nth-child(5){animation-delay:.20s}
+  .day-card:nth-child(6){animation-delay:.24s}
+  .day-card:nth-child(7){animation-delay:.28s}
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div class="badge">Plan de Estudio · 12 Semanas</div>
+    <h1>Mi camino al<br><span>SAT perfecto</span></h1>
+    <p class="subtitle">Lunes a viernes: estudio diario · Sábados alternos: Practice Exam · Domingos: descanso total</p>
+  </header>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--math-m)"></div>Matemáticas</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--read-m)"></div>Reading &amp; Writing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--exam-m)"></div>Practice Exam</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Repaso de errores</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ccc"></div>Descanso</div>
+  </div>
+
+  <!-- UNIT CARDS -->
+  <div class="unit-strip" id="unitStrip">
+    <div class="unit-card uc-math">
+      <div class="uc-num" id="mathUnitNum">1</div>
+      <div class="uc-body">
+        <div class="uc-subject">Unidad de Math</div>
+        <div class="uc-title" id="mathUnitTitle">Álgebra lineal</div>
+      </div>
+    </div>
+    <div class="unit-card uc-read">
+      <div class="uc-num" id="readUnitNum">1</div>
+      <div class="uc-body">
+        <div class="uc-subject">Unidad de Reading &amp; Writing</div>
+        <div class="uc-title" id="readUnitTitle">Comprensión literal</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div>
+        <div class="progress-label">Math — progreso</div>
+        <div class="progress-bar"><div class="progress-fill pf-math" id="mathBar" style="width:8%"></div></div>
+      </div>
+      <div>
+        <div class="progress-label">Reading — progreso</div>
+        <div class="progress-bar"><div class="progress-fill pf-read" id="readBar" style="width:8%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK NAV -->
+  <div class="week-nav">
+    <div class="week-label" id="weekLabel">Semana 1 <small>de 12</small></div>
+    <div class="week-pills" id="weekPills"></div>
+  </div>
+
+  <!-- GRID -->
+  <div class="week-grid" id="weekGrid"></div>
+
+  <!-- TIPS -->
+  <div id="tipBox" class="tip-box">
+    <div class="tip-icon">💡</div>
+    <div>
+      <div class="tip-title">Consejo de la semana</div>
+      <div class="tip-body" id="tipText"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const mathUnits = [
+  "Álgebra lineal","Ecuaciones cuadráticas","Funciones","Geometría básica",
+  "Trigonometría","Estadística y probabilidad","Sistemas de ecuaciones","Expresiones algebraicas",
+  "Números y operaciones","Geometría analítica","Geometría avanzada","Repaso integral Math"
+];
+const readUnits = [
+  "Comprensión literal","Inferencia y contexto","Vocabulario en contexto","Análisis del argumento",
+  "Datos y gráficas","Textos científicos","Textos históricos","Textos sociales",
+  "Retórica y propósito","Comparación de pasajes","Edición y gramática","Repaso integral Reading"
+];
+const examWeeks = new Set([2,4,6,8,10,12]);
+const tips = [
+  "Empieza despacio. La semana 1 es para crear hábito, no para memorizar todo.",
+  "¡Primer Practice Exam! No te asustes con el puntaje — es solo tu punto de partida.",
+  "Estudiar 90 min enfocado vale más que 3 horas distraído. Silencia el teléfono.",
+  "Segundo examen. Compara con el primero y anota en qué secciones mejoraste.",
+  "Llevas casi la mitad del plan. ¡Vas increíble! Mantén el ritmo.",
+  "Tercer Practice Exam. Revisa bien el tiempo — el SAT penaliza preguntas sin responder.",
+  "Esta semana refuerza los temas donde cometiste errores repetitivos.",
+  "Cuarto examen. Ya deberías ver un patrón claro en tus errores.",
+  "Entra en modo 'examen real': simula condiciones de silencio y tiempo exacto.",
+  "Quinto Practice Exam. Estás en la recta final. Confía en tu preparación.",
+  "Semana de pulido: repasa fórmulas clave, vocabulario y tips de tiempo.",
+  "Última semana. Descansa bien antes del examen real. ¡Tú puedes! 🎯"
+];
+
+const dayNames = ["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+
+function getDayData(week, dayIndex) {
+  const mu = mathUnits[week-1];
+  const ru = readUnits[week-1];
+  const isExam = examWeeks.has(week);
+
+  if (dayIndex === 5) { // Saturday
+    if (isExam) return { type:'exam', title:'Practice Exam', blocks:[] };
+    return { type:'rest', title:'Descanso activo', blocks:[{label:'Opcional',task:'Repaso ligero 30 min',cls:'sb-rest',lc:''}] };
+  }
+  if (dayIndex === 6) return { type:'rest', title:'Descanso total 🌿', blocks:[] };
+
+  const schedule = [
+    { type:'math', title:'Lesson Day',
+      blocks:[
+        {label:'Math',task:`📘 Lesson: ${mu}`,cls:'sb-math',lc:'math-c',time:'60 min'},
+        {label:'Reading',task:`📖 Lesson: ${ru}`,cls:'sb-read',lc:'read-c',time:'60 min'},
+      ]
+    },
+    { type:'mixed', title:'Practice Day',
+      blocks:[
+        {label:'Math',task:`✏️ Practice: ${mu}`,cls:'sb-math',lc:'math-c',time:'60 min'},
+        {label:'Reading',task:`✏️ Practice: ${ru}`,cls:'sb-read',lc:'read-c',time:'60 min'},
+      ]
+    },
+    { type:'mixed', title:'Practice Day',
+      blocks:[
+        {label:'Math',task:'✏️ Math practice (variado)',cls:'sb-math',lc:'math-c',time:'60 min'},
+        {label:'Reading',task:'✏️ Reading practice (variado)',cls:'sb-read',lc:'read-c',time:'60 min'},
+      ]
+    },
+    { type:'challenge', title:'Challenge Day',
+      blocks:[
+        {label:'Math',task:'🔥 Harder questions',cls:'sb-math',lc:'math-c',time:'75 min'},
+        {label:'Reading',task:'📝 Grammar practice',cls:'sb-read',lc:'read-c',time:'60 min'},
+      ]
+    },
+    { type:'review', title:'Review Day',
+      blocks:[
+        {label:'Math',task:'🔍 Review errores Math',cls:'sb-gold',lc:'gold-c',time:'45 min'},
+        {label:'Reading',task:'🔍 Review errores Reading',cls:'sb-gold',lc:'gold-c',time:'45 min'},
+      ]
+    },
+  ];
+  return schedule[dayIndex];
+}
+
+function getCardClass(dayIndex, week) {
+  if (dayIndex === 6) return 'card-rest';
+  if (dayIndex === 5) return examWeeks.has(week) ? 'card-exam' : 'card-rest';
+  if (dayIndex === 0 || dayIndex === 2) return 'card-math';
+  if (dayIndex === 1 || dayIndex === 3) return 'card-read';
+  if (dayIndex === 4) return 'card-review';
+  return '';
+}
+
+function renderWeek(week) {
+  // Update week label
+  document.getElementById('weekLabel').innerHTML = `Semana ${week} <small>de 12</small>`;
+  // Update units
+  document.getElementById('mathUnitNum').textContent = week;
+  document.getElementById('readUnitNum').textContent = week;
+  document.getElementById('mathUnitTitle').textContent = mathUnits[week-1];
+  document.getElementById('readUnitTitle').textContent = readUnits[week-1];
+  // Update progress
+  const pct = Math.round(week / 12 * 100);
+  document.getElementById('mathBar').style.width = pct + '%';
+  document.getElementById('readBar').style.width = pct + '%';
+  // Update tip
+  document.getElementById('tipText').textContent = tips[week-1];
+  // Update tip icon
+  document.querySelector('.tip-icon').textContent = examWeeks.has(week) ? '🗂️' : '💡';
+
+  const grid = document.getElementById('weekGrid');
+  grid.innerHTML = '';
+
+  for (let d = 0; d < 7; d++) {
+    const data = getDayData(week, d);
+    const card = document.createElement('div');
+    card.className = 'day-card ' + getCardClass(d, week);
+
+    let inner = `<div class="day-name">${dayNames[d]}</div>`;
+
+    if (data.type === 'exam') {
+      inner += `
+        <div class="exam-badge">🗂️ Practice Exam</div>
+        <div class="subject-block sb-exam" style="margin-top:auto">
+          <div class="sb-label exam-c">Duración</div>
+          <div class="sb-task">3 – 4 horas<br>Condiciones reales</div>
+          <div class="sb-time">Luego: revisión de errores</div>
+        </div>`;
+    } else if (data.type === 'rest' && d === 6) {
+      inner += `<div class="rest-icon" style="margin-top:12px">🌿</div>
+        <div style="text-align:center;font-size:13px;font-weight:500;opacity:.45;margin-bottom:16px">Descanso total</div>`;
+    } else if (d === 5 && !examWeeks.has(week)) {
+      inner += `<div class="rest-icon" style="margin-top:12px">☀️</div>
+        <div style="text-align:center;font-size:13px;font-weight:500;opacity:.45;margin-bottom:8px">Descanso activo</div>
+        <div class="subject-block sb-rest"><div class="sb-task">Repaso ligero opcional (30 min)</div></div>`;
+    } else {
+      for (const b of data.blocks) {
+        inner += `<div class="subject-block ${b.cls}">
+          <div class="sb-label ${b.lc}">${b.label}</div>
+          <div class="sb-task">${b.task}</div>
+          ${b.time ? `<div class="sb-time">⏱ ${b.time}</div>` : ''}
+        </div>`;
+      }
+    }
+
+    card.innerHTML = inner;
+    grid.appendChild(card);
+  }
+}
+
+function renderPills() {
+  const container = document.getElementById('weekPills');
+  for (let w = 1; w <= 12; w++) {
+    const btn = document.createElement('button');
+    btn.className = 'pill' + (examWeeks.has(w) ? ' exam-pill' : '') + (w === 1 ? ' active' : '');
+    btn.textContent = w;
+    btn.dataset.week = w;
+    btn.onclick = () => {
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      renderWeek(w);
+    };
+    container.appendChild(btn);
+  }
+}
+
+renderPills();
+renderWeek(1);
+</script>
+</body>
+</html>
